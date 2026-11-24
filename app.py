@@ -45,10 +45,6 @@ controles = html.Div([
                 dcc.Slider(id=p, min=0, max=10, step=1, value=5), casillas(p)],
                className="caja")
       for p in PILARES],
-    html.Div([html.Label("País a analizar"),
-              html.P("Se marca en naranja. También puedes hacer clic en el mapa.", className="descripcion"),
-              dcc.Dropdown(id="pais", value="ESP", clearable=False, options=OPCIONES_PAIS)],
-             className="caja caja-pais"),
 ], className="fila")
 
 app.layout = html.Div([
@@ -62,7 +58,14 @@ app.layout = html.Div([
     # En medio: ranking a la izquierda y podio en vertical a la derecha
     html.Div([
         html.Div([html.H3("Ranking"), dcc.Graph(id="ranking", config=SIN_BARRA)], className="caja grande"),
-        html.Div(id="podio", className="columna-podio"),
+        html.Div([
+            html.Div(id="podio", className="columna-podio"),
+            # Selector de país debajo del tercer puesto
+            html.Div([html.Label("País a analizar"),
+                      html.P("Se marca en naranja. También puedes hacer clic en el mapa.", className="descripcion"),
+                      dcc.Dropdown(id="pais", value="ESP", clearable=False, options=OPCIONES_PAIS)],
+                     className="caja"),
+        ], className="columna-derecha"),
     ], className="fila"),
     # Abajo: mapa a la izquierda y comparación del país a la derecha
     html.Div([

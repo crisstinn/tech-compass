@@ -32,3 +32,5 @@ label { font-weight: bold; display: block; margin-top: 14px; }
 .barra-fija .fila { margin-top: 8px; }
 .barra-fija .caja { padding: 10px 12px; }
 .barra-fija .casillas label { margin: 0; }
+.columna-derecha { flex: 0 0 260px; display: flex; flex-direction: column; gap: 12px; }
+.columna-derecha .columna-podio { flex: none; }
