@@ -9,9 +9,9 @@ ESCALA = [[0, "#e0f3f8"], [0.5, "#4fb3bf"], [1, "#08306b"]]  # azul claro -> tur
 
 
 def bandera(codigo2):
-    """Emoji de bandera a partir del código de 2 letras (Grecia es EL en Eurostat)."""
-    codigo2 = "GR" if codigo2 == "EL" else codigo2
-    return "".join(chr(0x1F1E6 + ord(letra) - ord("A")) for letra in codigo2)
+    """Imagen de la bandera a partir del código de 2 letras (Grecia es EL en Eurostat)."""
+    codigo2 = "gr" if codigo2 == "EL" else codigo2.lower()
+    return html.Img(src=f"https://flagcdn.com/24x18/{codigo2}.png", className="bandera")
 
 
 def podio(resultado, nombres, codigos2, pilares):
@@ -24,7 +24,7 @@ def podio(resultado, nombres, codigos2, pilares):
         fortaleza = fila[pilares].astype(float).idxmax()
         diferencia = fila["nota"] - resultado.iloc[i + 1]["nota"]
         tarjetas.append(html.Div([
-            html.Div(f"{medallas[i]} {bandera(codigos2[pais])} {nombres[pais]}", className="podio-pais"),
+            html.Div([medallas[i], " ", bandera(codigos2[pais]), " ", nombres[pais]], className="podio-pais"),
             html.Div(f"{fila['nota']:.2f}", className="podio-nota"),
             html.Div(f"Fortaleza: {fortaleza}"),
             html.Div(f"+{diferencia:.2f} sobre el siguiente", className="descripcion"),
@@ -35,10 +35,11 @@ def podio(resultado, nombres, codigos2, pilares):
 def ranking(resultado, pais):
     colores = [NARANJA if c == pais else AZUL for c in resultado.index]
     fig = px.bar(resultado.iloc[::-1], x="nota", y="nombre", orientation="h",
-                 text=resultado["nota"].iloc[::-1].round(1), height=560,
+                 text=resultado["nota"].iloc[::-1].round(1), height=500,
                  labels={"nota": "Nota (0-100)", "nombre": ""})
     fig.update_traces(marker_color=colores[::-1], textposition="outside", hovertemplate="%{y}: %{x:.2f}<extra></extra>")
     fig.update_layout(margin=dict(l=10, r=40, t=10, b=10), xaxis_range=[0, 100])
+    fig.update_yaxes(dtick=1, tickfont_size=11)  # que se vean los 27 nombres
     return fig
 
 
@@ -73,7 +74,7 @@ def mapa(resultado, pais, columna):
 
     fig.update_geos(fitbounds="locations", visible=False, bgcolor="#eaf2f8",
                     showland=True, landcolor="#f7f9fb")
-    fig.update_layout(height=560, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="#eaf2f8",
+    fig.update_layout(height=430, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="#eaf2f8",
                       showlegend=False)
     return fig
 
@@ -85,6 +86,6 @@ def perfil(resultado, pais, nombre, pilares):
         go.Bar(name="Media UE", x=pilares, y=resultado[pilares].mean(), marker_color="#c9d3e0"),
     ])
     fig.update_traces(hovertemplate="%{x}: %{y:.2f}<extra></extra>")
-    fig.update_layout(barmode="group", yaxis_range=[0, 100], height=470,
+    fig.update_layout(barmode="group", yaxis_range=[0, 100], height=420,
                       legend=dict(orientation="h", y=1.1))
     return fig

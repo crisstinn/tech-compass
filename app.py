@@ -3,7 +3,7 @@
 Ejecutar:  python app.py   y abrir http://127.0.0.1:8050
 """
 import pandas as pd
-from dash import Dash, Input, Output, dcc, html
+from dash import Dash, Input, Output, ctx, dcc, html, no_update
 
 from src import graficos
 from src.indice import calcular_indice
@@ -37,12 +37,18 @@ app = Dash(__name__, title="¿Dónde invertir en tecnología?")
 SIN_BARRA = {"displayModeBar": False}  # oculta la barra de herramientas de Plotly
 server = app.server  # lo necesita Render
 
+OPCIONES_PAIS = [{"label": n, "value": c} for c, n in sorted(nombres.items(), key=lambda x: x[1])]
+
 # Fila de controles: una caja por pilar con su slider y sus casillas
 controles = html.Div([
-    html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
-              dcc.Slider(id=p, min=0, max=10, step=1, value=5), casillas(p)],
-             className="caja")
-    for p in PILARES
+    *[html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
+                dcc.Slider(id=p, min=0, max=10, step=1, value=5), casillas(p)],
+               className="caja")
+      for p in PILARES],
+    html.Div([html.Label("País a analizar"),
+              html.P("Se marca en naranja. También puedes hacer clic en el mapa.", className="descripcion"),
+              dcc.Dropdown(id="pais", value="ESP", clearable=False, options=OPCIONES_PAIS)],
+             className="caja caja-pais"),
 ], className="fila")
 
 app.layout = html.Div([
@@ -50,8 +56,9 @@ app.layout = html.Div([
     html.P("Ranking de los 27 países de la UE según talento, innovación, costes y entorno. "
            "Mueve los pesos para adaptarlo a tu empresa. Datos: Eurostat y Banco Mundial."),
     # Arriba: los sliders de los 4 pilares en horizontal
-    html.H3("¿Qué es más importante para ti?", className="subtitulo"),
-    controles,
+    # Barra fija: se queda arriba al bajar por la página
+    html.Div([html.H3("¿Qué es más importante para ti?", className="subtitulo"), controles],
+             className="barra-fija"),
     # En medio: ranking a la izquierda y podio en vertical a la derecha
     html.Div([
         html.Div([html.H3("Ranking"), dcc.Graph(id="ranking", config=SIN_BARRA)], className="caja grande"),
@@ -69,11 +76,9 @@ app.layout = html.Div([
             dcc.Graph(id="mapa", config=SIN_BARRA),
         ], className="caja mapa"),
         html.Div([
-            html.H3(id="titulo-pais"),
-            html.Span("País a analizar:", className="descripcion"),
-            dcc.Dropdown(id="pais", value="ESP", clearable=False,
-                         options=[{"label": n, "value": c}
-                                  for c, n in sorted(nombres.items(), key=lambda x: x[1])]),
+            html.Div([html.H3(id="titulo-pais"),
+                      dcc.Dropdown(id="pais-abajo", value="ESP", clearable=False, options=OPCIONES_PAIS,
+                                   className="selector")], className="cabecera"),
             dcc.Graph(id="perfil", config=SIN_BARRA),
         ], className="caja"),
     ], className="fila"),
@@ -103,10 +108,19 @@ def actualizar(talento, innovacion, costes, entorno, ind_t, ind_i, ind_c, ind_e,
             titulo)
 
 
-@app.callback(Output("pais", "value"), Input("mapa", "clickData"), prevent_initial_call=True)
-def clic_en_mapa(clic):
-    """Al hacer clic en un país del mapa, se selecciona en el desplegable."""
-    return clic["points"][0]["location"]
+@app.callback(
+    Output("pais", "value"), Output("pais-abajo", "value"),
+    Input("pais", "value"), Input("pais-abajo", "value"), Input("mapa", "clickData"),
+    prevent_initial_call=True,
+)
+def sincronizar_pais(arriba, abajo, clic):
+    """Los dos selectores de país y el clic en el mapa muestran siempre el mismo país."""
+    if ctx.triggered_id == "pais":
+        return no_update, arriba
+    if ctx.triggered_id == "pais-abajo":
+        return abajo, no_update
+    pais = clic["points"][0].get("location") if clic else None  # clic en el mapa
+    return (pais, pais) if pais in nombres else (no_update, no_update)
 
 
 if __name__ == "__main__":
