@@ -37,34 +37,45 @@ app = Dash(__name__, title="¿Dónde invertir en tecnología?")
 SIN_BARRA = {"displayModeBar": False}  # oculta la barra de herramientas de Plotly
 server = app.server  # lo necesita Render
 
+# Fila de controles: una caja por pilar con su slider y sus casillas
 controles = html.Div([
-    html.H3("¿Qué es más importante para ti?"),
-    *[html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
-                dcc.Slider(id=p, min=0, max=10, step=1, value=5), casillas(p)])
-      for p in PILARES],
-    html.H3("País a analizar"),
-    dcc.Dropdown(id="pais", value="ESP", clearable=False,
-                 options=[{"label": n, "value": c} for c, n in sorted(nombres.items(), key=lambda x: x[1])]),
-], className="caja controles")
+    html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
+              dcc.Slider(id=p, min=0, max=10, step=1, value=5), casillas(p)],
+             className="caja")
+    for p in PILARES
+], className="fila")
 
 app.layout = html.Div([
     html.H1("¿Dónde invertir en tecnología en Europa?"),
     html.P("Ranking de los 27 países de la UE según talento, innovación, costes y entorno. "
            "Mueve los pesos para adaptarlo a tu empresa. Datos: Eurostat y Banco Mundial."),
-    html.Div(id="podio", className="fila"),
-    html.Div([controles, html.Div(dcc.Graph(id="ranking", config=SIN_BARRA), className="caja grande")],
-             className="fila"),
+    # Arriba: los sliders de los 4 pilares en horizontal
+    html.H3("¿Qué es más importante para ti?", className="subtitulo"),
+    controles,
+    # En medio: ranking a la izquierda y podio en vertical a la derecha
+    html.Div([
+        html.Div([html.H3("Ranking"), dcc.Graph(id="ranking", config=SIN_BARRA)], className="caja grande"),
+        html.Div(id="podio", className="columna-podio"),
+    ], className="fila"),
+    # Abajo: mapa a la izquierda y comparación del país a la derecha
     html.Div([
         html.Div([
             html.Div([html.H3("Mapa"), html.Span("Pinta en el mapa:", className="descripcion"),
                       dcc.Dropdown(id="columna-mapa", value="nota", clearable=False, className="selector",
                                    options=[{"label": "Nota global", "value": "nota"}]
                                    + [{"label": p, "value": p} for p in PILARES])],
-                     className="cabecera-mapa"),
+                     className="cabecera"),
             html.P("Pasa el ratón por un país para ver su ficha; haz clic para analizarlo.", className="descripcion"),
             dcc.Graph(id="mapa", config=SIN_BARRA),
         ], className="caja mapa"),
-        html.Div([html.H3(id="titulo-pais"), dcc.Graph(id="perfil", config=SIN_BARRA)], className="caja"),
+        html.Div([
+            html.H3(id="titulo-pais"),
+            html.Span("País a analizar:", className="descripcion"),
+            dcc.Dropdown(id="pais", value="ESP", clearable=False,
+                         options=[{"label": n, "value": c}
+                                  for c, n in sorted(nombres.items(), key=lambda x: x[1])]),
+            dcc.Graph(id="perfil", config=SIN_BARRA),
+        ], className="caja"),
     ], className="fila"),
 ])
 

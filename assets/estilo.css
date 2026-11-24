@@ -12,6 +12,9 @@ label { font-weight: bold; display: block; margin-top: 14px; }
 .podio-nota { font-size: 30px; font-weight: bold; color: #0f8b8d; margin: 4px 0; }
 .caja { box-shadow: 0 1px 4px rgba(27, 42, 65, .08); }
 .mapa { flex: 1.4; background: #eaf2f8; }
-.cabecera-mapa { display: flex; align-items: center; gap: 10px; }
-.cabecera-mapa h3 { margin: 0 10px 0 0; }
+.cabecera { display: flex; align-items: center; gap: 10px; }
+.cabecera h3 { margin: 0 10px 0 0; }
 .selector { width: 180px; }
+.subtitulo { margin: 24px 0 0; }
+.columna-podio { flex: 0 0 300px; display: flex; flex-direction: column; gap: 20px; }
+.columna-podio .podio { flex: 1; display: flex; flex-direction: column; justify-content: center; }

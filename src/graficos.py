@@ -35,9 +35,10 @@ def podio(resultado, nombres, codigos2, pilares):
 def ranking(resultado, pais):
     colores = [NARANJA if c == pais else AZUL for c in resultado.index]
     fig = px.bar(resultado.iloc[::-1], x="nota", y="nombre", orientation="h",
-                 text=resultado["nota"].iloc[::-1].round(1), height=650,
+                 text=resultado["nota"].iloc[::-1].round(1), height=560,
                  labels={"nota": "Nota (0-100)", "nombre": ""})
     fig.update_traces(marker_color=colores[::-1], textposition="outside", hovertemplate="%{y}: %{x:.2f}<extra></extra>")
+    fig.update_layout(margin=dict(l=10, r=40, t=10, b=10), xaxis_range=[0, 100])
     return fig
 
 
@@ -84,6 +85,6 @@ def perfil(resultado, pais, nombre, pilares):
         go.Bar(name="Media UE", x=pilares, y=resultado[pilares].mean(), marker_color="#c9d3e0"),
     ])
     fig.update_traces(hovertemplate="%{x}: %{y:.2f}<extra></extra>")
-    fig.update_layout(barmode="group", yaxis_range=[0, 100], height=480,
+    fig.update_layout(barmode="group", yaxis_range=[0, 100], height=470,
                       legend=dict(orientation="h", y=1.1))
     return fig
