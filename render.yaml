@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: invertir-tecnologia
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:server

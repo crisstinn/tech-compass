@@ -1,39 +1,44 @@
-# career-compass
+# ¿Dónde invertir en tecnología en Europa?
 
-## Descripción
+App interactiva que ordena los 27 países de la UE según lo atractivos que son para una empresa
+tecnológica. El usuario decide qué le importa más (talento, innovación, costes o entorno) y el
+ranking se recalcula al momento.
 
-CareerCompass es una aplicación interactiva de apoyo a la toma de decisiones profesionales cuyo objetivo es ayudar a los usuarios a identificar qué países se adaptan mejor a su perfil profesional y a sus prioridades personales.
+Proyecto de *Desarrollo de Aplicaciones para la Visualización de Datos* (ICAI).
 
-La aplicación combinará información laboral y socioeconómica de diferentes países para permitir su comparación teniendo en cuenta factores como el salario esperado, el coste de vida, las oportunidades laborales, las condiciones de trabajo y la calidad de vida.
+**App desplegada:** https://tech-compass-cog9.onrender.com
 
-El usuario podrá introducir información sobre su perfil profesional, como su experiencia y principales habilidades, y establecer qué factores considera más importantes a la hora de trabajar en otro país. A partir de esta información, CareerCompass ofrecerá recomendaciones personalizadas y permitirá comparar diferentes alternativas de forma interactiva.
+_(La versión gratuita de Render se duerme si nadie la usa: la primera carga puede tardar unos 50 segundos.)_
 
 ## Objetivos
 
-Los principales objetivos del proyecto son:
+- Ayudar a una empresa tecnológica a comparar países europeos para invertir o abrir una sede.
+- Que el usuario decida qué le importa más (talento, innovación, costes o entorno) y vea el ranking al momento.
+- Usar datos oficiales y públicos, descargados automáticamente.
 
-- Integrar información laboral y socioeconómica procedente de diferentes fuentes públicas.
-- Relacionar las habilidades del usuario con posibles ocupaciones profesionales.
-- Estimar mediante un modelo predictivo el salario esperado de un determinado perfil profesional en diferentes países.
-- Permitir al usuario establecer sus propias prioridades a la hora de comparar países.
-- Generar recomendaciones personalizadas a partir del perfil y las preferencias introducidas.
+## Cómo funciona
 
-## Fuentes de datos
+1. **Datos** (`src/datos.py`): descarga 8 indicadores de Eurostat y del Banco Mundial
+   (lista en `datos/indicadores.csv`) y guarda el dato más reciente de cada país en `datos/datos.csv`.
+2. **Índice** (`src/indice.py`): pasa cada indicador a una nota de 0 a 100 (en los costes, más barato = mejor),
+   hace la media de cada pilar y la media ponderada de los pilares con los pesos del usuario.
+3. **App** (`app.py`): sliders de pesos, ranking, mapa y comparación de un país con la media de la UE.
 
-Inicialmente se prevé utilizar principalmente las siguientes fuentes:
+## Ejecutar
 
-- **Eurostat:** indicadores relacionados con coste de vida, vivienda, mercado laboral, horas de trabajo y calidad de vida.
-- **OECD:** información económica y salarial comparable entre países.
-- **Datasets públicos de salarios profesionales:** para el desarrollo y entrenamiento del modelo de predicción salarial.
+```
+pip install -r requirements.txt
+python app.py
+```
 
-Las distintas fuentes serán limpiadas, transformadas y homogeneizadas antes de su integración, prestando especial atención a la estandarización de países, periodos temporales y valores ausentes.
+Para actualizar los datos: `python src/datos.py`
 
-## Plan de trabajo inicial
+## Plan de trabajo
 
-1. Búsqueda, selección y adquisición de las fuentes de datos.
-2. Exploración y limpieza de los datasets.
-3. Homogeneización e integración de la información de los diferentes países.
-4. Análisis exploratorio y desarrollo de las primeras visualizaciones.
-5. Desarrollo y evaluación del modelo de predicción salarial.
-6. Desarrollo del sistema de comparación y recomendación de países.
-7. Diseño de la interfaz interactiva mediante Dash y Plotly.
+- [x] Elegir los indicadores y las fuentes de datos
+- [x] Descarga automática desde Eurostat y Banco Mundial
+- [x] Cálculo del índice con pesos ajustables
+- [x] App interactiva con ranking, mapa y perfil por país
+- [x] Despliegue en Render
+- [ ] Mejoras de diseño
+- [ ] Añadir más indicadores y años
