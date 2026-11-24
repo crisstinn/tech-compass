@@ -4,3 +4,5 @@ h1 { margin-bottom: 4px; }
 .caja { background: white; border-radius: 10px; padding: 15px; flex: 1; }
 .controles { flex: 0 0 280px; }
 .grande { flex: 1; }
+label { font-weight: bold; display: block; margin-top: 14px; }
+.descripcion { font-size: 12px; color: #6b7a90; margin: 2px 0 4px; }

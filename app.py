@@ -15,13 +15,22 @@ paises = pd.read_csv("datos/paises.csv")
 nombres = dict(zip(paises["codigo3"], paises["nombre"]))
 PILARES = ["Talento", "Innovación", "Costes", "Entorno"]
 
+# Explicación de cada pilar que se muestra al usuario debajo de su slider
+DESCRIPCIONES = {
+    "Talento": "¿Hay gente preparada para contratar? Especialistas TIC y graduados en carreras STEM.",
+    "Innovación": "¿Las empresas innovan? Inversión en I+D de las empresas y uso de la nube.",
+    "Costes": "¿Cuánto cuesta operar? Coste laboral en tecnología y precio de la luz. Más barato = mejor nota.",
+    "Entorno": "¿Es un país rico y seguro para invertir? PIB per cápita y Estado de derecho.",
+}
+
 # ---------- 2. Diseño de la página ----------
 app = Dash(__name__, title="¿Dónde invertir en tecnología?")
 server = app.server  # lo necesita Render
 
 controles = html.Div([
     html.H3("¿Qué es más importante para ti?"),
-    *[html.Div([html.Label(p), dcc.Slider(id=p, min=0, max=10, step=1, value=5)])
+    *[html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
+                dcc.Slider(id=p, min=0, max=10, step=1, value=5)])
       for p in PILARES],
     html.H3("País a analizar"),
     dcc.Dropdown(id="pais", value="ESP", clearable=False,
