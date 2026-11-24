@@ -17,11 +17,19 @@ PILARES = ["Talento", "Innovación", "Costes", "Entorno"]
 
 # Explicación de cada pilar que se muestra al usuario debajo de su slider
 DESCRIPCIONES = {
-    "Talento": "¿Hay gente preparada para contratar? Especialistas TIC y graduados en carreras STEM.",
-    "Innovación": "¿Las empresas innovan? Inversión en I+D de las empresas y uso de la nube.",
-    "Costes": "¿Cuánto cuesta operar? Coste laboral en tecnología y precio de la luz. Más barato = mejor nota.",
-    "Entorno": "¿Es un país rico y seguro para invertir? PIB per cápita y Estado de derecho.",
+    "Talento": "¿Hay gente preparada para contratar?",
+    "Innovación": "¿Las empresas del país innovan?",
+    "Costes": "¿Cuánto cuesta operar? Más barato = mejor nota.",
+    "Entorno": "¿Es un país rico y seguro para invertir?",
 }
+
+
+def casillas(pilar):
+    """Una casilla por cada indicador del pilar, todas marcadas al empezar."""
+    del_pilar = indicadores[indicadores["pilar"] == pilar]
+    return dcc.Checklist(id="ind-" + pilar, className="casillas",
+                         options=[{"label": n, "value": i} for i, n in zip(del_pilar["id"], del_pilar["nombre"])],
+                         value=list(del_pilar["id"]))
 
 # ---------- 2. Diseño de la página ----------
 app = Dash(__name__, title="¿Dónde invertir en tecnología?")
@@ -30,7 +38,7 @@ server = app.server  # lo necesita Render
 controles = html.Div([
     html.H3("¿Qué es más importante para ti?"),
     *[html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
-                dcc.Slider(id=p, min=0, max=10, step=1, value=5)])
+                dcc.Slider(id=p, min=0, max=10, step=1, value=5), casillas(p)])
       for p in PILARES],
     html.H3("País a analizar"),
     dcc.Dropdown(id="pais", value="ESP", clearable=False,
@@ -52,11 +60,14 @@ app.layout = html.Div([
 @app.callback(
     Output("ranking", "figure"), Output("mapa", "figure"),
     Output("perfil", "figure"), Output("titulo-pais", "children"),
-    [Input(p, "value") for p in PILARES], Input("pais", "value"),
+    [Input(p, "value") for p in PILARES],
+    [Input("ind-" + p, "value") for p in PILARES],
+    Input("pais", "value"),
 )
-def actualizar(talento, innovacion, costes, entorno, pais):
+def actualizar(talento, innovacion, costes, entorno, ind_t, ind_i, ind_c, ind_e, pais):
     pesos = {"Talento": talento, "Innovación": innovacion, "Costes": costes, "Entorno": entorno}
-    resultado = calcular_indice(datos, indicadores, pesos)
+    activos = ind_t + ind_i + ind_c + ind_e  # indicadores marcados por el usuario
+    resultado = calcular_indice(datos, indicadores, pesos, activos)
     resultado["nombre"] = resultado.index.map(nombres)
 
     # Gráfico 1: ranking de barras (el país elegido en naranja)

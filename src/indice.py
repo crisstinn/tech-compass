@@ -12,8 +12,11 @@ def normalizar(columna, sentido):
     return nota
 
 
-def calcular_indice(datos, indicadores, pesos):
-    """datos: una fila por país. pesos: {"Talento": 25, "Costes": 25, ...}"""
+def calcular_indice(datos, indicadores, pesos, activos=None):
+    """datos: una fila por país. pesos: {"Talento": 5, "Costes": 5, ...}
+    activos: lista de indicadores que el usuario quiere usar (None = todos)."""
+    if activos is not None:
+        indicadores = indicadores[indicadores["id"].isin(activos)]
     resultado = pd.DataFrame(index=datos.index)
 
     # 1. Nota de 0 a 100 de cada indicador
@@ -27,6 +30,8 @@ def calcular_indice(datos, indicadores, pesos):
         resultado[pilar] = notas[ids].mean(axis=1)
 
     # 3. Nota final = media ponderada de los pilares
+    #    (si el usuario ha quitado todos los indicadores de un pilar, ese pilar no cuenta)
+    pesos = {p: w for p, w in pesos.items() if resultado[p].notna().all()}
     total_pesos = sum(pesos.values()) or 1
     resultado["nota"] = sum(resultado[p] * w for p, w in pesos.items()) / total_pesos
 

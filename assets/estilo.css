@@ -6,3 +6,4 @@ h1 { margin-bottom: 4px; }
 .grande { flex: 1; }
 label { font-weight: bold; display: block; margin-top: 14px; }
 .descripcion { font-size: 12px; color: #6b7a90; margin: 2px 0 4px; }
+.casillas label { font-weight: normal; font-size: 12px; margin: 2px 0; display: flex; gap: 6px; }
