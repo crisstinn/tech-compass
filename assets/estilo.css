@@ -7,3 +7,11 @@ h1 { margin-bottom: 4px; }
 label { font-weight: bold; display: block; margin-top: 14px; }
 .descripcion { font-size: 12px; color: #6b7a90; margin: 2px 0 4px; }
 .casillas label { font-weight: normal; font-size: 12px; margin: 2px 0; display: flex; gap: 6px; }
+.podio { flex: 1; text-align: center; }
+.podio-pais { font-size: 18px; font-weight: bold; }
+.podio-nota { font-size: 30px; font-weight: bold; color: #0f8b8d; margin: 4px 0; }
+.caja { box-shadow: 0 1px 4px rgba(27, 42, 65, .08); }
+.mapa { flex: 1.4; background: #eaf2f8; }
+.cabecera-mapa { display: flex; align-items: center; gap: 10px; }
+.cabecera-mapa h3 { margin: 0 10px 0 0; }
+.selector { width: 180px; }
