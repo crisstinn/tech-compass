@@ -1,0 +1,9 @@
+id,nombre,pilar,fuente,codigo,filtros,sentido
+especialistas_tic,Especialistas TIC (% del empleo),Talento,eurostat,isoc_sks_itspt,unit=PC_EMP,1
+graduados_stem,Graduados STEM (por 1.000 jóvenes),Talento,eurostat,educ_uoe_grad04,isced11=ED5-8;sex=T;unit=P_THAB,1
+id_empresas,I+D de las empresas (% del PIB),Innovación,eurostat,rd_e_gerdtot,sectperf=BES;unit=PC_GDP,1
+uso_cloud,Empresas que usan la nube (%),Innovación,eurostat,isoc_cicce_use,indic_is=E_CC;size_emp=GE10;unit=PC_ENT,1
+coste_laboral,Coste laboral sector TIC (€/hora),Costes,eurostat,lc_lci_lev,unit=EUR;lcstruct=D1_D4_MD5;nace_r2=J,-1
+precio_luz,Precio de la luz para empresas (€/kWh),Costes,eurostat,nrg_pc_205,nrg_cons=MWH500-1999;tax=X_VAT;currency=EUR;unit=KWH,-1
+pib_per_capita,PIB per cápita (dólares PPA),Entorno,worldbank,NY.GDP.PCAP.PP.KD,,1
+estado_derecho,Estado de derecho (índice del Banco Mundial),Entorno,worldbank,GOV_WGI_RL.EST,source=3,1
