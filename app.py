@@ -63,13 +63,16 @@ guia = html.Details([
 ], className="guia")
 
 # Fila de controles: tipo de empresa + una caja por pilar con su slider y sus casillas
-cabecera_controles = html.Div([
-    html.H3("¿Qué es más importante para ti?", className="subtitulo"),
-    html.Span("Tipo de empresa:", className="descripcion"),
+cabecera_controles = html.H3("¿Qué es más importante para ti?", className="subtitulo")
+
+# Tipo de empresa: entre los sliders y el ranking
+tipo_empresa = html.Div([
+    html.Label("Tipo de empresa:"),
     dcc.Dropdown(id="tipo-empresa", value="equilibrado", clearable=False, className="selector-perfil",
                  options=[{"label": v["nombre"], "value": k} for k, v in PERFILES.items()]),
+    html.Span("Ajusta los sliders automáticamente según el tipo de empresa.", className="descripcion"),
     html.Button("Restablecer", id="restablecer", className="boton"),
-], className="cabecera")
+], className="caja cabecera fila-empresa")
 
 controles = html.Div([
     html.Div([html.Label(p), html.P(DESCRIPCIONES[p], className="descripcion"),
@@ -85,6 +88,7 @@ app.layout = html.Div([
     guia,
     # Barra fija: se queda arriba al bajar por la página
     html.Div([cabecera_controles, controles], className="barra-fija"),
+    tipo_empresa,
     # En medio: ranking a la izquierda y podio en vertical a la derecha
     html.Div([
         html.Div([html.H3("Ranking"), dcc.Graph(id="ranking", config=SIN_BARRA)], className="caja grande"),
