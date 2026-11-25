@@ -34,3 +34,12 @@ label { font-weight: bold; display: block; margin-top: 14px; }
 .barra-fija .casillas label { margin: 0; }
 .columna-derecha { flex: 0 0 260px; display: flex; flex-direction: column; gap: 12px; }
 .columna-derecha .columna-podio { flex: none; }
+.ventaja { color: #2a9d8f; font-size: 13px; }
+.desventaja { color: #e76f51; font-size: 13px; }
+.boton { background: #0f8b8d; color: white; border: none; border-radius: 8px; padding: 8px 14px;
+         font-weight: bold; cursor: pointer; }
+.boton:hover { background: #0b6e70; }
+.selector-perfil { width: 260px; }
+.guia { background: white; border-radius: 10px; padding: 10px 15px; margin-top: 10px; font-size: 14px; }
+.guia summary { cursor: pointer; font-weight: bold; color: #0f8b8d; }
+.pie { margin-top: 25px; font-size: 12px; color: #6b7a90; text-align: center; }
