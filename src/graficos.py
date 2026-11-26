@@ -34,7 +34,11 @@ def podio(resultado, nombres, codigos2, pilares):
             html.Div([medallas[i], " ", bandera(codigos2[pais]), " ", nombres[pais]], className="podio-pais"),
             html.Div(f"{fila['nota']:.2f}", className="podio-nota"),
             html.Div(f"✔ Destaca en {ventaja} ({vs_media[ventaja]:+.0f} vs. media)", className="ventaja"),
-            html.Div(f"✘ Flojea en {desventaja} ({vs_media[desventaja]:+.0f} vs. media)", className="desventaja"),
+            # Si su peor pilar sigue por encima de la media, no "flojea": es su punto menos fuerte
+            html.Div(f"✘ Flojea en {desventaja} ({vs_media[desventaja]:+.0f} vs. media)", className="desventaja")
+            if vs_media[desventaja] < 0 else
+            html.Div(f"• Punto menos fuerte: {desventaja} ({vs_media[desventaja]:+.0f} vs. media)",
+                     className="descripcion"),
             html.Div(f"+{diferencia:.2f} sobre el siguiente", className="descripcion"),
         ], className="caja podio"))
     return tarjetas
