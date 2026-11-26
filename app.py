@@ -94,6 +94,19 @@ app.layout = html.Div([
         html.Div([html.H3("Ranking"), dcc.Graph(id="ranking", config=SIN_BARRA)], className="caja grande"),
         html.Div([
             html.Div(id="podio", className="columna-podio"),
+            # Explicación de los textos del podio (se abre al hacer clic)
+            html.Details([
+                html.Summary("ⓘ ¿Qué significa esto?"),
+                html.P([html.B("✔ Destaca en: "), "el pilar en el que el país está más por encima de la media "
+                        "de los 27 países de la UE. Ej.: «Innovación (+44)» = 44 puntos más que la media."]),
+                html.P([html.B("✘ Flojea en: "), "el pilar en el que el país está más por debajo de la media. "
+                        "Ej.: «Talento (−20)» = 20 puntos menos que la media."]),
+                html.P([html.B("• Punto menos fuerte: "), "su pilar con la nota más baja, pero que aun así está "
+                        "por encima de la media. No es una debilidad, solo lo que menos destaca."]),
+                html.P([html.B("+X sobre el siguiente: "), "puntos de ventaja sobre el país que va detrás."]),
+                html.P("Las notas de los pilares van de 0 a 100: 0 = peor país de la UE en ese pilar, "
+                       "100 = mejor país.", className="descripcion"),
+            ], className="caja explicacion"),
             # Selector de país debajo del tercer puesto
             html.Div([html.Label("País a analizar"),
                       html.P("Se marca en naranja. También puedes hacer clic en el mapa.", className="descripcion"),

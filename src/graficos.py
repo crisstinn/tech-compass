@@ -17,6 +17,16 @@ def bandera(codigo2):
     return html.Img(src=f"https://flagcdn.com/24x18/{codigo2}.png", className="bandera")
 
 
+# Textos que aparecen al pasar el ratón por cada línea del podio
+AYUDA_DESTACA = ("Es el pilar en el que este país está más por encima de la media de los 27 países de la UE. "
+                 "El número indica cuántos puntos (sobre 100) le saca a la media.")
+AYUDA_FLOJEA = ("Es el pilar en el que este país está más por debajo de la media de la UE. "
+                "El número indica cuántos puntos le faltan para llegar a la media.")
+AYUDA_MENOS_FUERTE = ("Es su pilar con la nota más baja, pero aun así está por encima de la media de la UE. "
+                      "Por eso no se considera una debilidad.")
+AYUDA_SIGUIENTE = "Puntos de ventaja sobre el país que va justo detrás en el ranking."
+
+
 def podio(resultado, nombres, codigos2, pilares):
     """Tres tarjetas con los tres primeros países."""
     medallas = ["🥇", "🥈", "🥉"]
@@ -33,13 +43,15 @@ def podio(resultado, nombres, codigos2, pilares):
         tarjetas.append(html.Div([
             html.Div([medallas[i], " ", bandera(codigos2[pais]), " ", nombres[pais]], className="podio-pais"),
             html.Div(f"{fila['nota']:.2f}", className="podio-nota"),
-            html.Div(f"✔ Destaca en {ventaja} ({vs_media[ventaja]:+.0f} vs. media)", className="ventaja"),
+            html.Div(f"✔ Destaca en {ventaja} ({vs_media[ventaja]:+.0f} vs. media)", className="ventaja ayuda",
+                     title=AYUDA_DESTACA),
             # Si su peor pilar sigue por encima de la media, no "flojea": es su punto menos fuerte
-            html.Div(f"✘ Flojea en {desventaja} ({vs_media[desventaja]:+.0f} vs. media)", className="desventaja")
+            html.Div(f"✘ Flojea en {desventaja} ({vs_media[desventaja]:+.0f} vs. media)", className="desventaja ayuda",
+                     title=AYUDA_FLOJEA)
             if vs_media[desventaja] < 0 else
             html.Div(f"• Punto menos fuerte: {desventaja} ({vs_media[desventaja]:+.0f} vs. media)",
-                     className="descripcion"),
-            html.Div(f"+{diferencia:.2f} sobre el siguiente", className="descripcion"),
+                     className="descripcion ayuda", title=AYUDA_MENOS_FUERTE),
+            html.Div(f"+{diferencia:.2f} sobre el siguiente", className="descripcion ayuda", title=AYUDA_SIGUIENTE),
         ], className="caja podio"))
     return tarjetas
 
