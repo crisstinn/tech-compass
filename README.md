@@ -37,11 +37,22 @@ _(La versión gratuita de Render se duerme si nadie la usa: la primera carga pue
 3. **Modelo** (`src/modelo.py`): K-Means (scikit-learn) agrupa los países con un perfil parecido.
 4. **Perfiles** (`src/perfiles.py`): pesos predefinidos para cada tipo de empresa.
 5. **Gráficos** (`src/graficos.py`): ranking, mapa, podio y comparación (Plotly).
+   La explicación "¿Cómo se calcula la nota?" está en `src/explicacion.py` y usa ejemplos con los datos reales.
 6. **API REST** (`src/api.py`, Flask-RESTful):
    - `GET /api/ranking` → ranking con pesos iguales
    - `GET /api/ranking/<perfil>` → ranking de un perfil (`startup`, `expansion`, `id`, `costes`, `talento`)
    - `GET /api/pais/<codigo>` → ficha de un país (por ejemplo `/api/pais/ESP`)
 7. **App** (`app.py`): diseño de la página y callbacks de Dash.
+
+## Limitaciones de los datos
+
+- Se usa el **dato más reciente** de cada indicador, así que no todos son del mismo año (2024–2026).
+  El precio de la luz de 2026 corresponde solo al primer semestre.
+- El **PIB per cápita** de Luxemburgo e Irlanda está inflado por la presencia de multinacionales,
+  lo que les favorece en el pilar Entorno.
+- La normalización **min-max** es sensible a los valores extremos: un país muy alejado del resto
+  comprime las notas de los demás.
+- Son 8 indicadores: es una aproximación, no un análisis exhaustivo de cada país.
 
 ## Ejecutar
 
@@ -62,3 +73,13 @@ Para actualizar los datos: `python src/datos.py`
 - [x] Mejoras de diseño: mapa interactivo, podio, perfiles de empresa
 - [x] Clustering de países y API REST
 - [ ] Añadir más indicadores y años
+
+## Tests
+
+Comprueban el cálculo del índice (notas de 0 a 100, inversión de los costes, efecto de los pesos y de
+quitar indicadores):
+
+```
+pip install pytest
+python -m pytest
+```
