@@ -4,7 +4,7 @@ Ejecutar:  python app.py   y abrir http://127.0.0.1:8050
 API REST:  http://127.0.0.1:8050/api/ranking   (ver src/api.py)
 """
 import pandas as pd
-from dash import Dash, Input, Output, State, ctx, dcc, html, no_update
+from dash import ALL, Dash, Input, Output, State, ctx, dcc, html, no_update
 
 from src import graficos
 from src.api import crear_api
@@ -95,7 +95,7 @@ app.layout = html.Div([
         html.Div([
             html.Div(id="podio", className="columna-podio"),
             # Explicación de los textos del podio (se abre al hacer clic)
-            html.Details([
+            html.Details(id="explicacion", children=[
                 html.Summary("ⓘ ¿Qué significa esto?"),
                 html.P([html.B("✔ Destaca en: "), "el pilar en el que el país está más por encima de la media "
                         "de los 27 países de la UE. Ej.: «Innovación (+44)» = 44 puntos más que la media."]),
@@ -208,6 +208,16 @@ def descargar(_clics, talento, innovacion, costes, entorno, ind_t, ind_i, ind_c,
                 f"# Pesos: Talento={talento}, Innovación={innovacion}, Costes={costes}, Entorno={entorno}\n"
                 f"# Indicadores usados: {', '.join(activos)}\n")
     return dcc.send_string(cabecera + tabla.to_csv(index=False), "tech_compass_resultados.csv")
+
+
+@app.callback(
+    Output("explicacion", "open"),
+    Input({"tipo": "ayuda", "clave": ALL}, "n_clicks"),
+    prevent_initial_call=True,
+)
+def abrir_explicacion(clics):
+    """Al hacer clic en una línea del podio, se abre la explicación (y la página baja hasta ella)."""
+    return True if any(clics) else no_update
 
 
 @app.callback(

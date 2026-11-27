@@ -61,3 +61,8 @@ label { font-weight: bold; display: block; margin-top: 14px; }
 .explicacion { font-size: 13px; padding: 10px 12px; }
 .explicacion summary { cursor: pointer; font-weight: bold; color: #0f8b8d; }
 .explicacion p { margin: 6px 0; }
+/* Las líneas del podio son enlaces a la explicación: que no parezcan enlaces azules */
+a.ayuda { display: block; text-decoration: underline dotted #b8c2d0; }
+a.ventaja { color: #2a9d8f; } a.desventaja { color: #e76f51; } a.descripcion { color: #6b7a90; }
+a.ayuda:hover { text-decoration-color: currentColor; }
+.explicacion { scroll-margin-top: 260px; }

@@ -27,6 +27,12 @@ AYUDA_MENOS_FUERTE = ("Es su pilar con la nota más baja, pero aun así está po
 AYUDA_SIGUIENTE = "Puntos de ventaja sobre el país que va justo detrás en el ranking."
 
 
+def linea_ayuda(texto, clase, ayuda, clave):
+    """Línea del podio que explica algo al pasar el ratón y, al hacer clic, lleva a la explicación."""
+    return html.A(texto, href="#explicacion", title=ayuda + " (Haz clic para ver la explicación completa.)",
+                  id={"tipo": "ayuda", "clave": clave}, className=f"{clase} ayuda")
+
+
 def podio(resultado, nombres, codigos2, pilares):
     """Tres tarjetas con los tres primeros países."""
     medallas = ["🥇", "🥈", "🥉"]
@@ -43,15 +49,15 @@ def podio(resultado, nombres, codigos2, pilares):
         tarjetas.append(html.Div([
             html.Div([medallas[i], " ", bandera(codigos2[pais]), " ", nombres[pais]], className="podio-pais"),
             html.Div(f"{fila['nota']:.2f}", className="podio-nota"),
-            html.Div(f"✔ Destaca en {ventaja} ({vs_media[ventaja]:+.0f} vs. media)", className="ventaja ayuda",
-                     title=AYUDA_DESTACA),
+            linea_ayuda(f"✔ Destaca en {ventaja} ({vs_media[ventaja]:+.0f} vs. media)", "ventaja",
+                        AYUDA_DESTACA, f"destaca-{i}"),
             # Si su peor pilar sigue por encima de la media, no "flojea": es su punto menos fuerte
-            html.Div(f"✘ Flojea en {desventaja} ({vs_media[desventaja]:+.0f} vs. media)", className="desventaja ayuda",
-                     title=AYUDA_FLOJEA)
+            linea_ayuda(f"✘ Flojea en {desventaja} ({vs_media[desventaja]:+.0f} vs. media)", "desventaja",
+                        AYUDA_FLOJEA, f"flojea-{i}")
             if vs_media[desventaja] < 0 else
-            html.Div(f"• Punto menos fuerte: {desventaja} ({vs_media[desventaja]:+.0f} vs. media)",
-                     className="descripcion ayuda", title=AYUDA_MENOS_FUERTE),
-            html.Div(f"+{diferencia:.2f} sobre el siguiente", className="descripcion ayuda", title=AYUDA_SIGUIENTE),
+            linea_ayuda(f"• Punto menos fuerte: {desventaja} ({vs_media[desventaja]:+.0f} vs. media)",
+                        "descripcion", AYUDA_MENOS_FUERTE, f"menos-{i}"),
+            linea_ayuda(f"+{diferencia:.2f} sobre el siguiente", "descripcion", AYUDA_SIGUIENTE, f"siguiente-{i}"),
         ], className="caja podio"))
     return tarjetas
 
