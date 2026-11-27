@@ -66,3 +66,8 @@ a.ayuda { display: block; text-decoration: underline dotted #b8c2d0; }
 a.ventaja { color: #2a9d8f; } a.desventaja { color: #e76f51; } a.descripcion { color: #6b7a90; }
 a.ayuda:hover { text-decoration-color: currentColor; }
 .explicacion { scroll-margin-top: 260px; }
+/* Tabla de datos reales del país */
+.tabla { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabla th { text-align: left; color: #6b7a90; border-bottom: 2px solid #e6eaf0; padding: 6px; }
+.tabla td { border-bottom: 1px solid #eef1f5; padding: 6px; }
+.subtitulo-tabla { margin: 10px 0 0; }

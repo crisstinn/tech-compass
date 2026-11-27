@@ -1,4 +1,5 @@
 """Gráficos y tarjetas de la app."""
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from dash import html
@@ -150,3 +151,34 @@ def perfil(resultado, pais, nombre, pilares):
     fig.update_layout(height=420, yaxis_range=[-limite, limite],
                       yaxis_title=f"Puntos respecto a la media UE", margin=dict(t=20))
     return fig
+
+
+def formato(valor, decimales):
+    """Número en formato español: 4,7 · 0,192 · 63.970"""
+    if pd.isna(valor):
+        return "—"
+    texto = f"{valor:,.{decimales}f}"
+    return texto.replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def decimales_de(columna):
+    """Decimales según el tamaño de los números del indicador (iguales para el país y la media)."""
+    tipico = columna.abs().median()
+    return 0 if tipico >= 1000 else 1 if tipico >= 10 else 2 if tipico >= 0.5 else 3
+
+
+def tabla_pais(datos, indicadores, pais, nombre):
+    """Tabla con los datos reales del país frente a la media de la UE (verde = mejor, rojo = peor)."""
+    filas = []
+    for ind in indicadores.itertuples():
+        valor, media = datos.loc[pais, ind.id], datos[ind.id].mean()
+        d = decimales_de(datos[ind.id])
+        mejor = (valor - media) * ind.sentido >= 0  # en costes, estar por debajo de la media es mejor
+        filas.append(html.Tr([
+            html.Td(ind.nombre),
+            html.Td(formato(valor, d), className="ventaja" if mejor else "desventaja"),
+            html.Td(formato(media, d)),
+            html.Td(int(datos.loc[pais, "año_" + ind.id])),
+        ]))
+    cabecera = html.Tr([html.Th("Indicador"), html.Th(nombre), html.Th("Media UE"), html.Th("Año")])
+    return html.Table([html.Thead(cabecera), html.Tbody(filas)], className="tabla")

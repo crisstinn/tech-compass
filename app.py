@@ -62,6 +62,19 @@ guia = html.Details([
     ]),
 ], className="guia")
 
+calculo = html.Details([
+    html.Summary("¿Cómo se calcula la nota?"),
+    html.Ol([
+        html.Li(["Se descargan ", html.B("8 indicadores"), " de Eurostat y del Banco Mundial para los 27 países "
+                 "(el dato más reciente de cada uno)."]),
+        html.Li(["Cada indicador se pasa a una ", html.B("nota de 0 a 100"), ": el peor país saca 0 y el mejor 100. "
+                 "En los costes se invierte: el más barato saca 100."]),
+        html.Li(["La nota de cada ", html.B("pilar"), " es la media de sus indicadores."]),
+        html.Li(["La ", html.B("nota final"), " es la media ponderada de los pilares con los pesos que eliges en los sliders."]),
+    ]),
+    html.P("Ejemplo: con todos los pesos a 5, la nota final es la media simple de los 4 pilares.", className="descripcion"),
+], className="guia")
+
 # Fila de controles: tipo de empresa + una caja por pilar con su slider y sus casillas
 cabecera_controles = html.H3("¿Qué es más importante para ti?", className="subtitulo")
 
@@ -86,6 +99,7 @@ app.layout = html.Div([
     html.P("Ranking de los 27 países de la UE según talento, innovación, costes y entorno. "
            "Mueve los pesos para adaptarlo a tu empresa. Datos: Eurostat y Banco Mundial."),
     guia,
+    calculo,
     # Barra fija: se queda arriba al bajar por la página
     html.Div([cabecera_controles, controles], className="barra-fija"),
     tipo_empresa,
@@ -135,6 +149,10 @@ app.layout = html.Div([
             html.P("Diferencia con la media de la UE en cada pilar: verde = mejor, rojo = peor.",
                    className="descripcion"),
             dcc.Graph(id="perfil", config=SIN_BARRA),
+            html.H4("Datos reales del país", className="subtitulo-tabla"),
+            html.P("Verde = mejor que la media de la UE; rojo = peor (en costes, más barato es mejor).",
+                   className="descripcion"),
+            html.Div(id="tabla-pais"),
         ], className="caja"),
     ], className="fila"),
     html.Footer(f"Fuentes: Eurostat y Banco Mundial (dato más reciente de cada indicador, años {AÑOS_DATOS}). "
@@ -169,7 +187,7 @@ def aplicar_perfil(perfil, _clics):
 
 @app.callback(
     Output("podio", "children"), Output("ranking", "figure"), Output("mapa", "figure"),
-    Output("perfil", "figure"), Output("titulo-pais", "children"),
+    Output("perfil", "figure"), Output("titulo-pais", "children"), Output("tabla-pais", "children"),
     [Input(p, "value") for p in PILARES],
     [Input("ind-" + p, "value") for p in PILARES],
     Input("pais", "value"), Input("columna-mapa", "value"),
@@ -189,7 +207,8 @@ def actualizar(talento, innovacion, costes, entorno, ind_t, ind_i, ind_c, ind_e,
             graficos.ranking(resultado, pais, base),
             graficos.mapa(resultado, pais, columna),
             graficos.perfil(resultado, pais, nombres[pais], PILARES),
-            titulo)
+            titulo,
+            graficos.tabla_pais(datos, indicadores, pais, nombres[pais]))
 
 
 @app.callback(
