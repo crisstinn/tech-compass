@@ -101,15 +101,7 @@ app.layout = html.Div([
             # Explicación de los textos del podio (se abre al hacer clic)
             html.Details(id="explicacion", children=[
                 html.Summary("ⓘ ¿Qué significa esto?"),
-                html.P([html.B("✔ Destaca en: "), "el pilar en el que el país está más por encima de la media "
-                        "de los 27 países de la UE. Ej.: «Innovación (+44)» = 44 puntos más que la media."]),
-                html.P([html.B("✘ Flojea en: "), "el pilar en el que el país está más por debajo de la media. "
-                        "Ej.: «Talento (−20)» = 20 puntos menos que la media."]),
-                html.P([html.B("• Punto menos fuerte: "), "su pilar con la nota más baja, pero que aun así está "
-                        "por encima de la media. No es una debilidad, solo lo que menos destaca."]),
-                html.P([html.B("+X sobre el siguiente: "), "puntos de ventaja sobre el país que va detrás."]),
-                html.P("Las notas de los pilares van de 0 a 100: 0 = peor país de la UE en ese pilar, "
-                       "100 = mejor país.", className="descripcion"),
+                html.Div(id="explicacion-texto"),  # se rellena con los países del podio
             ], className="caja explicacion"),
             # Selector de país debajo del tercer puesto
             html.Div([html.Label("País a analizar"),
@@ -178,6 +170,7 @@ def aplicar_perfil(perfil, _clics):
 @app.callback(
     Output("podio", "children"), Output("ranking", "figure"), Output("mapa", "figure"),
     Output("perfil", "figure"), Output("titulo-pais", "children"), Output("tabla-pais", "children"),
+    Output("explicacion-texto", "children"),
     [Input(p, "value") for p in PILARES],
     [Input("ind-" + p, "value") for p in PILARES],
     Input("pais", "value"), Input("columna-mapa", "value"),
@@ -198,7 +191,8 @@ def actualizar(talento, innovacion, costes, entorno, ind_t, ind_i, ind_c, ind_e,
             graficos.mapa(resultado, pais, columna),
             graficos.perfil(resultado, pais, nombres[pais], PILARES),
             titulo,
-            graficos.tabla_pais(datos, indicadores, pais, nombres[pais]))
+            graficos.tabla_pais(datos, indicadores, pais, nombres[pais]),
+            graficos.explicacion_podio(resultado, nombres, PILARES))
 
 
 @app.callback(

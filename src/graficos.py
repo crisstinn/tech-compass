@@ -183,3 +183,34 @@ def tabla_pais(datos, indicadores, pais, nombre):
         ]))
     cabecera = html.Tr([html.Th("Indicador"), html.Th(nombre), html.Th("Media UE"), html.Th("Año")])
     return html.Table([html.Thead(cabecera), html.Tbody(filas)], className="tabla")
+
+
+def explicacion_podio(resultado, nombres, pilares):
+    """Texto de "¿Qué significa esto?" con los números reales de los tres países del podio."""
+    media = resultado[pilares].mean()
+    parrafos = [html.P("Cada pilar tiene una nota de 0 (peor país de la UE) a 100 (mejor país). "
+                       "Esto es lo que significa el podio con tus preferencias actuales:",
+                       className="descripcion")]
+    for i in range(3):
+        pais, fila = resultado.index[i], resultado.iloc[i]
+        vs_media = (fila[pilares].astype(float) - media).dropna()
+        if vs_media.empty:
+            return parrafos
+        fuerte, debil = vs_media.idxmax(), vs_media.idxmin()
+        nombre = nombres[pais]
+
+        frases = [html.B(f"{nombre} ({i + 1}º, {fila['nota']:.2f} puntos). "),
+                  f"Destaca en {fuerte}: saca {fila[fuerte]:.0f} en ese pilar, frente a una media de la UE "
+                  f"de {media[fuerte]:.0f} ({vs_media[fuerte]:+.0f}). "]
+        if vs_media[debil] < 0:
+            frases.append(f"Flojea en {debil}: saca {fila[debil]:.0f}, por debajo de la media de "
+                          f"{media[debil]:.0f} ({vs_media[debil]:+.0f}). ")
+        else:
+            frases.append(f"Su punto menos fuerte es {debil} ({fila[debil]:.0f}), pero aun así está por encima "
+                          f"de la media de {media[debil]:.0f} ({vs_media[debil]:+.0f}), así que no es una debilidad. ")
+        if i < 2:
+            siguiente = resultado.index[i + 1]
+            frases.append(f"Saca {fila['nota'] - resultado.iloc[i + 1]['nota']:.2f} puntos más que "
+                          f"{nombres[siguiente]}, que va justo detrás.")
+        parrafos.append(html.P(frases))
+    return parrafos
