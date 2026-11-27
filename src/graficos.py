@@ -8,6 +8,7 @@ AZUL = "#0f8b8d"
 NARANJA = "#f2a541"
 VERDE = "#2a9d8f"
 ROJO = "#e76f51"
+ALTURA_MAPA = 720  # para que el mapa ocupe lo mismo que la comparación + tabla de la derecha
 COLORES_GRUPOS = ["#08306b", "#4fb3bf", "#f2a541", "#e76f51"]
 ESCALA = [[0, "#e0f3f8"], [0.5, "#4fb3bf"], [1, "#08306b"]]  # azul claro -> turquesa -> azul oscuro
 
@@ -126,9 +127,9 @@ def _decorar_mapa(fig, df, pais, leyenda=False):
         locations=df["pais"], text=df["pais"], mode="text", hoverinfo="skip",
         textfont=dict(size=9, color="#1b2a41")))
 
-    fig.update_geos(fitbounds="locations", visible=False, bgcolor="#eaf2f8",
+    fig.update_geos(fitbounds="locations", visible=False, bgcolor="#eaf2f8", projection_type="mercator",
                     showland=True, landcolor="#f7f9fb")
-    fig.update_layout(height=430, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="#eaf2f8",
+    fig.update_layout(height=ALTURA_MAPA, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="#eaf2f8",
                       showlegend=leyenda)
     fig.update_traces(showlegend=False, selector=dict(type="scattergeo"))
     return fig

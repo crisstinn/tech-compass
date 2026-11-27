@@ -8,6 +8,7 @@ from dash import ALL, Dash, Input, Output, State, ctx, dcc, html, no_update
 
 from src import graficos
 from src.api import crear_api
+from src.explicacion import explicacion_calculo
 from src.indice import calcular_indice
 from src.modelo import agrupar_paises
 from src.perfiles import PERFILES
@@ -62,18 +63,7 @@ guia = html.Details([
     ]),
 ], className="guia")
 
-calculo = html.Details([
-    html.Summary("¿Cómo se calcula la nota?"),
-    html.Ol([
-        html.Li(["Se descargan ", html.B("8 indicadores"), " de Eurostat y del Banco Mundial para los 27 países "
-                 "(el dato más reciente de cada uno)."]),
-        html.Li(["Cada indicador se pasa a una ", html.B("nota de 0 a 100"), ": el peor país saca 0 y el mejor 100. "
-                 "En los costes se invierte: el más barato saca 100."]),
-        html.Li(["La nota de cada ", html.B("pilar"), " es la media de sus indicadores."]),
-        html.Li(["La ", html.B("nota final"), " es la media ponderada de los pilares con los pesos que eliges en los sliders."]),
-    ]),
-    html.P("Ejemplo: con todos los pesos a 5, la nota final es la media simple de los 4 pilares.", className="descripcion"),
-], className="guia")
+calculo = explicacion_calculo(datos, indicadores, nombres, PILARES)  # desplegable "¿Cómo se calcula la nota?"
 
 # Fila de controles: tipo de empresa + una caja por pilar con su slider y sus casillas
 cabecera_controles = html.H3("¿Qué es más importante para ti?", className="subtitulo")
